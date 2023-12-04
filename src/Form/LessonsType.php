@@ -2,24 +2,27 @@
 
 namespace App\Form;
 
-use App\Entity\Users;
+use App\Entity\Lessons;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class InstructorsType extends AbstractType
+class LessonsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username')
+            ->add('courseId', HiddenType::class)
+            ->add('title')
+            ->add('content')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Users::class,
+            'data_class' => Lessons::class,
         ]);
     }
 }

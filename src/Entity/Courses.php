@@ -69,10 +69,9 @@ class Courses
         return $this->instructorId;
     }
 
-    public function setInstructorId(int $instructor_id): static
+    public function setInstructorId(int $instructorId): static
     {
-        $this->instructor_id = $instructor_id;
-
+        $this->instructorId = $instructorId;
         return $this;
     }
 
