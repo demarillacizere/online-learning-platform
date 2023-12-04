@@ -19,6 +19,7 @@ class CoursesController extends AbstractController
     {
         return $this->render('courses/index.html.twig', [
             'courses' => $coursesRepository->findAll(),
+            'title' => 'List of courses'
         ]);
     }
 
@@ -39,14 +40,16 @@ class CoursesController extends AbstractController
         return $this->render('courses/new.html.twig', [
             'course' => $course,
             'form' => $form,
+            'title' => 'Add New Course'
         ]);
     }
 
     #[Route('/{id}', name: 'app_courses_show', methods: ['GET'])]
-    public function show(Courses $course): Response
+    public function show(Request $request, Courses $course): Response
     {
         return $this->render('courses/show.html.twig', [
             'course' => $course,
+            'title' => 'Information about the course "' . $course->getTitle() . '"'
         ]);
     }
 
@@ -65,6 +68,7 @@ class CoursesController extends AbstractController
         return $this->render('courses/edit.html.twig', [
             'course' => $course,
             'form' => $form,
+            'title' => 'Edit course ' . $course->getId()
         ]);
     }
 
