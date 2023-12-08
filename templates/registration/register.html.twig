@@ -15,15 +15,12 @@
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'
         }) }}
+        {{ form_row(registrationForm.roles, {
+            label: 'Registering As'
+        }) }}
         {{ form_row(registrationForm.agreeTerms) }}
 
         <button type="submit" class="btn btn-primary py-3 px-5 mt-2">Register</button>
         {{ form_end(registrationForm) }}
     </div>
-    {#
-    <div class="form-floating">
-        <input type="text" class="form-control" id="name" placeholder="Your Name">
-        <label for="name">Your Name</label>
-    </div>
-    #}
 {% endblock %}

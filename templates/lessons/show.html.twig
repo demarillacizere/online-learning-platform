@@ -18,9 +18,6 @@
         </div>
 
         <div class="row mt-5">
-            <div class="col text-end">
-                <a class="btn btn-primary" href="{{ path('app_lessons_index') }}">Back to list</a>
-            </div>
             {% set found = false %}
             {% for enrollement in app.user.enrollments %}
                 {% for progress in enrollement.progresses %}
@@ -29,7 +26,7 @@
                     {% endif %}
                 {% endfor %}
             {% endfor %}
-            {% if not found %}
+            {% if not found and not is_granted ('ROLE_INSTRUCTOR')%}
                 <div class="col-auto">
                     <a class="btn btn-success" href="{{ path('app_lessons_complete', {id: lesson.id}) }}">Complete</a>
                 </div>

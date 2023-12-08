@@ -20,6 +20,7 @@ class InstructorController extends AbstractController
     {
         /** @var Users $user */
         $user = $this->getUser();
+        $courses = [];
         foreach ($user->getCourses() as $course) {
             $courses[] = [
                 'course' => $course,
