@@ -6,7 +6,7 @@ use App\Repository\EnrollmentsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
+
 #[ORM\Entity(repositoryClass: EnrollmentsRepository::class)]
 class Enrollments
 {
@@ -15,29 +15,26 @@ class Enrollments
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name:"student_id")]
-    private ?int $studentId = null;
+    #[ORM\Column(name: "enrollment_date")]
+    private ?\DateTimeImmutable $enrollmentDate = null;
 
-    #[ORM\Column(name:"course_id")]
-    private ?int $courseId = null;
+    #[ORM\ManyToOne(targetEntity: Users::class, inversedBy: 'enrollments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Users $user = null;
 
-    #[ORM\Column(name:"enrollment_date")]
-    private ?DateTimeImmutable $enrollmentDate = null;
+    #[ORM\ManyToOne(targetEntity: Courses::class, inversedBy: 'enrollments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Courses $course = null;
 
-    #[ORM\ManyToOne(inversedBy: 'enrollments')]
-    private ?Users $users = null;
-
-    #[ORM\ManyToOne(inversedBy: 'enrollments')]
-    private ?Courses $courses = null;
-
-    #[ORM\OneToMany(mappedBy: 'enrollments', targetEntity: Progress::class)]
+    #[ORM\OneToMany(mappedBy: 'enrollment', targetEntity: Progress::class)]
     private Collection $progresses;
 
     public function __construct()
     {
-        $this->enrollmentDate = new DateTimeImmutable();
         $this->progresses = new ArrayCollection();
+        $this->enrollmentDate = new \DateTimeImmutable();
     }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -50,62 +47,38 @@ class Enrollments
         return $this;
     }
 
-    public function getStudentId(): ?int
-    {
-        return $this->studentId;
-    }
-
-    public function setStudentId(int $studentId): static
-    {
-        $this->studentId = $studentId;
-
-        return $this;
-    }
-
-    public function getCourseId(): ?int
-    {
-        return $this->courseId;
-    }
-
-    public function setCourseId(int $courseId): static
-    {
-        $this->courseId = $courseId;
-
-        return $this;
-    }
-
-    public function getEnrollementDate(): ?DateTimeImmutable
+    public function getEnrollmentDate(): ?\DateTimeImmutable
     {
         return $this->enrollmentDate;
     }
 
-    public function setEnrollementDate(DateTimeImmutable $enrollementDate): static
+    public function setEnrollmentDate(\DateTimeImmutable $enrollmentDate): static
     {
-        $this->enrollementDate = $enrollementDate;
+        $this->enrollmentDate = $enrollmentDate;
 
         return $this;
     }
 
-    public function getUsers(): ?Users
+    public function getUser(): ?Users
     {
-        return $this->users;
+        return $this->user;
     }
 
-    public function setUsers(?Users $users): static
+    public function setUser(?Users $user): static
     {
-        $this->users = $users;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getCourses(): ?Courses
+    public function getCourse(): ?Courses
     {
-        return $this->courses;
+        return $this->course;
     }
 
-    public function setCourses(?Courses $courses): static
+    public function setCourse(?Courses $course): static
     {
-        $this->courses = $courses;
+        $this->course = $course;
 
         return $this;
     }
@@ -122,7 +95,7 @@ class Enrollments
     {
         if (!$this->progresses->contains($progress)) {
             $this->progresses->add($progress);
-            $progress->setEnrollments($this);
+            $progress->setEnrollment($this);
         }
 
         return $this;
@@ -132,8 +105,8 @@ class Enrollments
     {
         if ($this->progresses->removeElement($progress)) {
             // set the owning side to null (unless already changed)
-            if ($progress->getEnrollments() === $this) {
-                $progress->setEnrollments(null);
+            if ($progress->getEnrollment() === $this) {
+                $progress->setEnrollment(null);
             }
         }
 

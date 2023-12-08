@@ -17,9 +17,6 @@ class Lessons
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: "course_id")]
-    private ?int $courseId = null;
-
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -27,18 +24,20 @@ class Lessons
     private ?string $content = null;
 
     #[ORM\Column(name: "created_at")]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(name: "updated_at")]
-    private ?DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'lessons')]
-    private ?Courses $courses = null;
+    #[ORM\ManyToOne(targetEntity: Courses::class, inversedBy: 'lessons')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Courses $course = null;
 
     #[ORM\OneToMany(mappedBy: 'lessons', targetEntity: Progress::class)]
     private Collection $progresses;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
         $this->progresses = new ArrayCollection();
@@ -51,18 +50,6 @@ class Lessons
     public function setId(int $id): static
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getCourseId(): ?int
-    {
-        return $this->courseId;
-    }
-
-    public function setCourseId(int $courseId): static
-    {
-        $this->courseId = $courseId;
 
         return $this;
     }
@@ -91,38 +78,38 @@ class Lessons
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getCourses(): ?Courses
+    public function getCourse(): ?Courses
     {
-        return $this->courses;
+        return $this->course;
     }
 
-    public function setCourses(?Courses $courses): static
+    public function setCourse(?Courses $course): static
     {
-        $this->courses = $courses;
+        $this->course = $course;
 
         return $this;
     }

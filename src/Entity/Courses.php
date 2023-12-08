@@ -3,10 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\CoursesRepository;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: CoursesRepository::class)]
 class Courses
@@ -16,28 +16,26 @@ class Courses
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name:"instructor_id")]
-    private ?int $instructorId = null;
-
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\Column(name: "created_at")]
-    private ?DateTimeImmutable $createdAt = null;
+    #[ORM\Column(name: 'created_at')]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(name: "updated_at", nullable: true)]
-    private ?DateTimeImmutable $updatedAt = null;
+    #[ORM\Column(name: 'updated_at', nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]
-    private ?Users $instructors = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Users $instructor = null;
 
-    #[ORM\OneToMany(mappedBy: 'courses', targetEntity: Lessons::class)]
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Lessons::class)]
     private Collection $lessons;
 
-    #[ORM\OneToMany(mappedBy: 'courses', targetEntity: Enrollments::class)]
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Enrollments::class)]
     private Collection $enrollments;
 
     #[ORM\Column]
@@ -46,12 +44,12 @@ class Courses
     #[ORM\Column]
     private ?int $minutes = null;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->createdAt = new DateTimeImmutable();
         $this->lessons = new ArrayCollection();
         $this->enrollments = new ArrayCollection();
     }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -61,17 +59,6 @@ class Courses
     {
         $this->id = $id;
 
-        return $this;
-    }
-
-    public function getInstructorId(): ?int
-    {
-        return $this->instructorId;
-    }
-
-    public function setInstructorId(int $instructorId): static
-    {
-        $this->instructorId = $instructorId;
         return $this;
     }
 
@@ -99,41 +86,102 @@ class Courses
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTimeImmutable $updated_at): static
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getInstructors(): ?Users
+    public function getInstructor(): ?Users
     {
-        return $this->instructors;
+        return $this->instructor;
     }
 
-    public function setInstructors(?Users $instructors): static
+    public function setInstructor(?Users $instructor): static
     {
-        $this->instructors = $instructors;
+        $this->instructor = $instructor;
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Lessons>
+     */
+    public function getLessons(): Collection
+    {
+        return $this->lessons;
+    }
+
+    public function addLesson(Lessons $lesson): static
+    {
+        if (!$this->lessons->contains($lesson)) {
+            $this->lessons->add($lesson);
+            $lesson->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLesson(Lessons $lesson): static
+    {
+        if ($this->lessons->removeElement($lesson)) {
+            // set the owning side to null (unless already changed)
+            if ($lesson->getCourse() === $this) {
+                $lesson->setCourse(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Enrollments>
+     */
+    public function getEnrollments(): Collection
+    {
+        return $this->enrollments;
+    }
+
+    public function addEnrollment(Enrollments $enrollment): static
+    {
+        if (!$this->enrollments->contains($enrollment)) {
+            $this->enrollments->add($enrollment);
+            $enrollment->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollment(Enrollments $enrollment): static
+    {
+        if ($this->enrollments->removeElement($enrollment)) {
+            // set the owning side to null (unless already changed)
+            if ($enrollment->getCourse() === $this) {
+                $enrollment->setCourse(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getHours(): ?int
     {
         return $this->hours;
@@ -154,66 +202,6 @@ class Courses
     public function setMinutes(int $minutes): static
     {
         $this->minutes = $minutes;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Lessons>
-     */
-    public function getLessons(): Collection
-    {
-        return $this->lessons;
-    }
-
-    public function addLesson(Lessons $lesson): static
-    {
-        if (!$this->lessons->contains($lesson)) {
-            $this->lessons->add($lesson);
-            $lesson->setCourses($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLesson(Lessons $lesson): static
-    {
-        if ($this->lessons->removeElement($lesson)) {
-            // set the owning side to null (unless already changed)
-            if ($lesson->getCourses() === $this) {
-                $lesson->setCourses(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Enrollments>
-     */
-    public function getEnrollments(): Collection
-    {
-        return $this->enrollments;
-    }
-
-    public function addEnrollment(Enrollments $enrollment): static
-    {
-        if (!$this->enrollments->contains($enrollment)) {
-            $this->enrollments->add($enrollment);
-            $enrollment->setCourses($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEnrollment(Enrollments $enrollment): static
-    {
-        if ($this->enrollments->removeElement($enrollment)) {
-            // set the owning side to null (unless already changed)
-            if ($enrollment->getCourses() === $this) {
-                $enrollment->setCourses(null);
-            }
-        }
 
         return $this;
     }
