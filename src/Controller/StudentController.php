@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class StudentController extends AbstractController
 {
-    #[Route('/student/courses', name: 'app_student_courses')]
+    #[Route('/student/dashboard/', name: 'app_student_dashboard', methods: ['GET'])]
     #[IsGranted('ROLE_STUDENT')]
     public function enrolledCourses(): Response
     {
@@ -25,6 +25,7 @@ class StudentController extends AbstractController
         return $this->render('student/index.html.twig', [
             'enrolledCourses' => $enrolledCourses,
             'user' => $user,
+            'title' => "My Dashboard"
         ]);
     }
 }

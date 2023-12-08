@@ -32,10 +32,10 @@ class Courses
     #[ORM\JoinColumn(nullable: false)]
     private ?Users $instructor = null;
 
-    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Lessons::class)]
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Lessons::class, cascade: ["remove"])]
     private Collection $lessons;
 
-    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Enrollments::class)]
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Enrollments::class, cascade: ["remove"])]
     private Collection $enrollments;
 
     #[ORM\Column]

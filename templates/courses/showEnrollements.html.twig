@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+
+        {% if enrollements is not empty %}
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Enrollment Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in enrollements %}
+                        <tr>
+                            <td>{{ enrollment.user.username }}</td>
+                            <td>{{ enrollment.enrollmentDate|date('Y-m-d H:i:s') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="mt-4">No enrollments found for this course.</p>
+        {% endif %}
+    </div>
+{% endblock %}

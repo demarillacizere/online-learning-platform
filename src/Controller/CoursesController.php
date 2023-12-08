@@ -36,6 +36,9 @@ class CoursesController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $course = new Courses();
+        $currentUser = $this->getUser();
+        // Set the current user as the instructor
+        $course->setInstructor($currentUser);
         $form = $this->createForm(CoursesType::class, $course);
         $form->handleRequest($request);
 
@@ -79,6 +82,17 @@ class CoursesController extends AbstractController
             'course' => $course,
             'form' => $form,
             'title' => 'Edit course <br>' . $course->getId()
+        ]);
+    }
+
+    #[Route('/{id}/enrollements', name: 'app_courses_show_enrollements', methods: ['GET'])]
+    #[IsGranted('ROLE_INSTRUCTOR')]
+    public function showEnrollements(Request $request, Courses $course): Response
+    {
+        return $this->render('courses/showEnrollements.html.twig', [
+            'course' => $course,
+            'enrollements' => $course->getEnrollments(),
+            'title' => 'Enrollements for "' . $course->getTitle() . '"'
         ]);
     }
 

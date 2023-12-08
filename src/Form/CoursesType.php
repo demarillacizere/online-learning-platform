@@ -18,10 +18,6 @@ class CoursesType extends AbstractType
             ->add('description')
             ->add('hours')
             ->add('minutes')
-            ->add('instructor', EntityType::class, [
-                'class' => Users::class,
-                'choice_label' => 'username'
-            ])
         ;
     }
 

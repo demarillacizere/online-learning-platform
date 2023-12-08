@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Instructor Dashboard{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2>Welcome, {{ user.username }}!</h2>
+
+        {% if courses is not empty %}
+            <h3 class="mt-4">Your Courses</h3>
+            <div class="row g-4">
+                {% for course in courses %}
+                    {% set courseEntity = course.course %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="{{ asset('img/course-1.jpg') }}" class="card-img-top" alt="Course Image">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ courseEntity.title }}</h5>
+                                <p class="card-text">{{ courseEntity.description }}</p>
+                                <p class="card-text">Number of Enrollments: <b>{{ courseEntity.enrollments.count() }}</b></p>
+                                {% if courseEntity.enrollments.count() > 0 %}
+                                    <a href="{{ path('app_courses_show_enrollements', {'id': courseEntity.id}) }}" class="btn btn-primary">View Enrollments</a>
+                                {% endif %}
+                                <a href="{{ path('app_courses_show', {'id': courseEntity.id}) }}" class="btn btn-primary">View Course</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="mt-4">You do not have any courses to instruct yet.</p>
+        {% endif %}
+
+        <a href="{{ path('app_courses_new') }}" class="btn btn-primary mt-5">Add New Course</a>
+    </div>
+{% endblock %}
