@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lessons{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <div class="row">
+            <div class="col-12">
+                <h3>{{ lesson.title }} ({{ lesson.course.title }})</h3>
+                <div><i class="fa fa-user text-primary me-2"></i>{{ lesson.updatedAt ? lesson.updatedAt|date('d.m.Y') : '' }} (created: {{ lesson.createdAt ? lesson.createdAt|date('d.m.Y') : '' }})</div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                {{ lesson.content|raw }}
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            {% set found = false %}
+            {% for enrollement in app.user.enrollments %}
+                {% for progress in enrollement.progresses %}
+                    {% if progress.status == 1 and lesson.id == progress.lessons.id %}
+                        {% set found = true %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            {% if not found and not is_granted ('ROLE_INSTRUCTOR')%}
+                <div class="col-auto">
+                    <a class="btn btn-success" href="{{ path('app_lessons_complete', {id: lesson.id}) }}">Complete</a>
+                </div>
+            {% endif %}
+            {% if is_granted('ROLE_INSTRUCTOR') %}
+                <div class="col-auto">
+                    <a class="btn btn-primary" href="{{ path('app_lessons_edit', {'id': lesson.id}) }}">Edit</a>
+                </div>
+                <div class="col-auto">
+                    {{ include('lessons/_delete_form.html.twig') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

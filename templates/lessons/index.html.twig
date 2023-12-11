@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lessons list{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row g-4 justify-content-center mt-5">
+            {% for lesson in lessons %}
+                {{ include('shared/_lesson_snippet.html.twig', {lesson: lesson, label: "Show", completed: false}) }}
+            {% else %}
+                <div class="col-12"><h5>No lessons found</h5></div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

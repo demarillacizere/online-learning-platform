@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h3>{{ course.description }}</h3>
+                <div><i class="fa fa-user-tie text-primary me-2"></i>{{ course.instructor.username }}</div>
+                <div><i class="fa fa-clock text-primary me-2"></i>{{ course.hours }}:{{ course.minutes }} Hrs</div>
+                <div><i class="fa fa-user text-primary me-2"></i>{{ course.createdAt ? course.createdAt|date('d.m.Y') : '' }}</div>
+            </div>
+        </div>
+        <div class="row g-4 justify-content-center mt-5">
+            {% for lesson in course.lessons %}
+                {{ include('shared/_lesson_snippet.html.twig', {lesson: lesson, label: "Start"}) }}
+            {% else %}
+                <div class="col-12"><h5>No lessons found</h5></div>
+            {% endfor %}
+        </div>
+        <div class="row mt-5">
+            {% if is_granted('ROLE_INSTRUCTOR') %}
+                <div class="col text-end">
+                    <a class="btn btn-primary" href="{{ path('app_lessons_new') }}">Add lesson</a>
+                </div>
+            {% endif %}
+            <div class="col-auto">
+                <a class="btn btn-primary" href="{{ path('app_courses_index') }}">Back to list</a>
+            </div>
+            {% for enrollemnt in course.enrollments %}
+                {% if app.user.id == enrollemnt.user.id %}
+                    <div class="col-auto">
+                        <a class="btn btn-warning" href="{{ path('app_courses_unenroll', {id: course.id}) }}">Unenroll</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if is_granted('ROLE_INSTRUCTOR') %}
+                <div class="col-auto">
+                    <a class="btn btn-primary" href="{{ path('app_courses_edit', {'id': course.id}) }}">Edit</a>
+                </div>
+                <div class="col-auto mt-n3">
+                    {{ include('courses/_delete_form.html.twig') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

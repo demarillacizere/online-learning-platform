@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2>Welcome, {{ user.username }}!</h2>
+
+        {% if enrolledCourses is not empty %}
+            <h3 class="mt-4">Enrolled Courses</h3>
+            <div class="row g-4">
+                {% for course in enrolledCourses %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="{{ asset('img/course-1.jpg') }}" class="card-img-top" alt="Course Image">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.title }}</h5>
+                                <p class="card-text">{{ course.description }}</p>
+                                <a href="{{ path('app_courses_show', {'id': course.id}) }}" class="btn btn-primary">View Course</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="mt-4">You are not enrolled in any courses yet.</p>
+        {% endif %}
+
+        <a href="{{ path('app_courses_index') }}" class="btn btn-primary mt-5">View Available Courses</a>
+    </div>
+{% endblock %}
